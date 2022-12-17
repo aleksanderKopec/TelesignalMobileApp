@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.LoginActivity">
+    tools:context=".ui.chat.ChatActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/chat_fragment_container_view"
         android:name="com.example.telesignal.ui.chat.fragments.ChatFragment"
-        android:id="@+id/login_fragment_container_view"
-    />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

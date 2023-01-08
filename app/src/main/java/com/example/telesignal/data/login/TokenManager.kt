@@ -19,7 +19,7 @@ class AuthTokenManager(activity: Activity) {
         Log.d(LOG_TAG, "Shared preferences: ${sharedPreferences.all}")
         return sharedPreferences.getString(AUTH_TOKEN_PREFERENCES_KEY, null)?.let {
             Log.d(LOG_TAG, "Getting token: $it")
-            return AuthToken(it)
+            return AuthToken(it, getUserId())
         }
     }
 
@@ -40,9 +40,27 @@ class AuthTokenManager(activity: Activity) {
         sharedPreferencesEditor.apply()
     }
 
-    fun getUsername(): String? {
+    fun getUsername(): String {
         Log.d(LOG_TAG, "Getting username")
-        return getToken()?.let { extractUsername(it.token) }
+        return getToken()?.let { extractUsername(it.token) }.orEmpty()
+    }
+
+    fun setUserId(userId: String) {
+        sharedPreferencesEditor.putString(USER_ID_PREFERENCES_KEY, userId)
+        sharedPreferencesEditor.apply()
+    }
+
+    fun getUserId(): String {
+        return sharedPreferences.getString(USER_ID_PREFERENCES_KEY, "").orEmpty()
+    }
+
+    fun setRoomId(roomId: String) {
+        sharedPreferencesEditor.putString(ROOM_ID_PREFERENCES_KEY, roomId)
+        sharedPreferencesEditor.apply()
+    }
+
+    fun getRoomId(): String {
+        return sharedPreferences.getString(ROOM_ID_PREFERENCES_KEY, "").orEmpty()
     }
 
     // decodes the token to extract current user
@@ -57,6 +75,8 @@ class AuthTokenManager(activity: Activity) {
 
         const val SHARED_PREFERENCES_FILE = "TOKEN_STORE"
         const val AUTH_TOKEN_PREFERENCES_KEY = "AUTH_TOKEN"
+        const val USER_ID_PREFERENCES_KEY = "USER_ID"
+        const val ROOM_ID_PREFERENCES_KEY = "ROOM_ID"
         const val LOG_TAG = "AuthTokenManager"
     }
 }

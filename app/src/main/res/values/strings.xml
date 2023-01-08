@@ -12,4 +12,10 @@
     <string name="login_failed">"Login failed"</string>
     <string name="chat_hint_message">message</string>
     <string name="chat_button_send">Send</string>
+    <string name="roomname">RoomName</string>
+    <string name="join">Join</string>
+    <string name="room_name">Room name</string>
+    <string name="login">login</string>
+    <string name="register">register</string>
+    <string name="username">Username</string>
 </resources>

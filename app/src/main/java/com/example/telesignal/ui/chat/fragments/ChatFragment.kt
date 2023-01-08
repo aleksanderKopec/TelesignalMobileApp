@@ -9,20 +9,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telesignal.R
 import com.example.telesignal.data.chat.ChatClient
-import com.example.telesignal.data.chat.dto.MessageDto
+import com.example.telesignal.data.cipher.CipherUtils
 import com.example.telesignal.data.login.AuthTokenManager
 import com.example.telesignal.ui.chat.utils.ChatAdapter
+import com.example.telesignal.ui.chat.utils.Message
 
 class ChatFragment : Fragment(R.layout.fragment_chat) {
 
+    private val cipherUtils = CipherUtils()
+
     private lateinit var tokenManager: AuthTokenManager
-    private val chatClient = ChatClient(BACKEND_HOST + CHAT_PATH)
+    private lateinit var chatClient: ChatClient;
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ChatAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tokenManager = AuthTokenManager(requireActivity())
+        chatClient = ChatClient.getInstance(tokenManager.getToken()?.token)
         addRecyclerView(view)
         addMessageSending(view)
         addMessageReceiving()
@@ -40,7 +44,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         val messageTextView: EditText = view.findViewById(R.id.chat_edit_text_view)
         button.setOnClickListener {
             chatClient.sendMessage(
-                    tokenManager.getUsername().orEmpty(),
+                    tokenManager.getUserId(),
+                    tokenManager.getRoomId(),
                     messageTextView.text.toString()
             )
             messageTextView.text.clear()
@@ -48,16 +53,37 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
     }
 
     private fun addMessageReceiving() {
-        chatClient.setOnMessageHandler { user: String, message: String ->
-            requireActivity().runOnUiThread { adapter.addMessage(MessageDto(user, message)) }
+        chatClient.setOnMessageHandler {
+            val base64Key = it.keyMap[tokenManager.getUsername()]!!
+            val decryptedKey =
+                cipherUtils.decryptFromBase64(
+                        base64Key,
+                        cipherUtils.getRsaKeyPair().privateKey,
+                        CipherUtils.RSA_CIPHER_ALGORITHM
+                )
+            val decryptionKey = cipherUtils.parseAesKey(decryptedKey)
+            val decryptedMessage = cipherUtils.decryptFromBase64(
+                    it.encryptedMessage,
+                    decryptionKey,
+                    CipherUtils.AES_CIPHER_ALGORITHM
+            )
+            requireActivity().runOnUiThread {
+                adapter.addMessage(
+                        Message(
+                                decryptedMessage,
+                                tokenManager.getUsername()
+                        )
+                )
+            }
+            requireActivity().runOnUiThread {
+                recyclerView.scrollToPosition(adapter.itemCount - 1)
+            }
         }
     }
 
 
     companion object {
 
-        private const val BACKEND_HOST = "http://10.0.2.2:5022"
-        private const val CHAT_PATH = "/chatHub"
     }
 
 }

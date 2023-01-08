@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.telesignal.R
-import com.example.telesignal.data.chat.dto.MessageDto
 
-class ChatAdapter(private val dataSet: ArrayList<MessageDto>) :
+class ChatAdapter(private val dataSet: ArrayList<Message>) :
     RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,8 +43,8 @@ class ChatAdapter(private val dataSet: ArrayList<MessageDto>) :
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
-    fun addMessage(messageDto: MessageDto) {
-        dataSet.add(messageDto)
+    fun addMessage(message: Message) {
+        dataSet.add(message)
         this.notifyItemInserted(dataSet.size - 1)
     }
 

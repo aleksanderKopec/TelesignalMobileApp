@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/chat_fragment_container_view"
-        android:name="com.example.telesignal.ui.chat.fragments.ChatFragment"
+        android:name="com.example.telesignal.ui.chat.fragments.JoinChatFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

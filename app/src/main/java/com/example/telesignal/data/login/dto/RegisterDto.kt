@@ -5,4 +5,5 @@ data class RegisterDto(
         val username: String,
         val password: String,
         val repeatPassword: String,
+        val publicKey: String,
 )

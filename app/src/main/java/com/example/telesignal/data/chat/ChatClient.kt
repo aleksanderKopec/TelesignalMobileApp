@@ -27,7 +27,7 @@ class ChatClient private constructor(token: String) {
     }
 
 
-    fun sendMessage(userId: String, roomId: String, message: String) {
+    fun sendMessage(username: String, userId: String, roomId: String, message: String) {
         val aesKey = cipherUtils.getAesKey()
         val encryptedMessage = cipherUtils.encryptToBase64(
                 message,
@@ -45,6 +45,7 @@ class ChatClient private constructor(token: String) {
             encryptionKeysMap[username] = encryptedAesKey
         }
         val messageDto = MessageDto(
+                username,
                 userId,
                 roomId,
                 encryptedMessage,

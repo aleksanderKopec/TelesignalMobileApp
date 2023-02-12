@@ -44,6 +44,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
         val messageTextView: EditText = view.findViewById(R.id.chat_edit_text_view)
         button.setOnClickListener {
             chatClient.sendMessage(
+                    tokenManager.getUsername(),
                     tokenManager.getUserId(),
                     tokenManager.getRoomId(),
                     messageTextView.text.toString()
@@ -71,7 +72,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 adapter.addMessage(
                         Message(
                                 decryptedMessage,
-                                tokenManager.getUsername()
+                                it.authorName
                         )
                 )
             }

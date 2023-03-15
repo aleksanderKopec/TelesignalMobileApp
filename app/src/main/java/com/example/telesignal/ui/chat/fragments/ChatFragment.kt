@@ -72,7 +72,8 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
                 adapter.addMessage(
                         Message(
                                 decryptedMessage,
-                                it.authorName
+                                it.authorName,
+                                it.authorName == tokenManager.getUsername()
                         )
                 )
             }
